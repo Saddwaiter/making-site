@@ -26,7 +26,7 @@ userRouter.get(
     if (user) {
       res.send(user);
     } else {
-      res.status(404).send({ message: 'User Not Found' });
+      res.status(404).send({ message: '"Користувача не знайдено' });
     }
   })
 );
@@ -52,7 +52,7 @@ userRouter.put(
         token: generateToken(updatedUser),
       });
     } else {
-      res.status(404).send({ message: 'User not found' });
+      res.status(404).send({ message: 'Користувача не знайдено' });
     }
   })
 );
@@ -76,12 +76,12 @@ userRouter.post(
         .messages()
         .send(
           {
-            from: 'Amazona <me@mg.yourdomain.com>',
+            from: 'Vintech <me@mg.yourdomain.com>',
             to: `${user.name} <${user.email}>`,
-            subject: `Reset Password`,
+            subject: `Скидання пароля`,
             html: ` 
-             <p>Please Click the following link to reset your password:</p> 
-             <a href="${baseUrl()}/reset-password/${token}"}>Reset Password</a>
+             <p>"Будь ласка, натисніть на наступне посилання, щоб скинути ваш пароль:</p> 
+             <a href="${baseUrl()}/reset-password/${token}"}>Скидання пароля</a>
              `,
           },
           (error, body) => {
@@ -89,9 +89,9 @@ userRouter.post(
             console.log(body);
           }
         );
-      res.send({ message: 'We sent reset password link to your email.' });
+      res.send({ message: 'Ми відправили на вашу електронну адресу посилання для скидання пароля' });
     } else {
-      res.status(404).send({ message: 'User not found' });
+      res.status(404).send({ message: 'Користувача не знайдено' });
     }
   })
 );
@@ -101,7 +101,7 @@ userRouter.post(
   expressAsyncHandler(async (req, res) => {
     jwt.verify(req.body.token, process.env.JWT_SECRET, async (err, decode) => {
       if (err) {
-        res.status(401).send({ message: 'Invalid Token' });
+        res.status(401).send({ message: 'Недійсний токен' });
       } else {
         const user = await User.findOne({ resetToken: req.body.token });
         if (user) {
@@ -109,11 +109,11 @@ userRouter.post(
             user.password = bcrypt.hashSync(req.body.password, 8);
             await user.save();
             res.send({
-              message: 'Password reseted successfully',
+              message: 'Пароль успішно скинуто',
             });
           }
         } else {
-          res.status(404).send({ message: 'User not found' });
+          res.status(404).send({ message: 'Користувача не знайдено' });
         }
       }
     });
@@ -131,9 +131,9 @@ userRouter.put(
       user.email = req.body.email || user.email;
       user.isAdmin = Boolean(req.body.isAdmin);
       const updatedUser = await user.save();
-      res.send({ message: 'User Updated', user: updatedUser });
+      res.send({ message: 'Користувача оновлено', user: updatedUser });
     } else {
-      res.status(404).send({ message: 'User Not Found' });
+      res.status(404).send({ message: 'Користувача не знайдено' });
     }
   })
 );
@@ -146,13 +146,13 @@ userRouter.delete(
     const user = await User.findById(req.params.id);
     if (user) {
       if (user.email === 'admin@example.com') {
-        res.status(400).send({ message: 'Can Not Delete Admin User' });
+        res.status(400).send({ message: 'Неможливо видалити користувача адміністратора' });
         return;
       }
       await user.remove();
-      res.send({ message: 'User Deleted' });
+      res.send({ message: 'користувача видалено' });
     } else {
-      res.status(404).send({ message: 'User Not Found' });
+      res.status(404).send({ message: 'Користувача не знайдено' });
     }
   })
 );
@@ -172,7 +172,7 @@ userRouter.post(
         return;
       }
     }
-    res.status(401).send({ message: 'Invalid email or password' });
+    res.status(401).send({ message: 'Недійсна адреса електронної пошти або пароль' });
   })
 );
 

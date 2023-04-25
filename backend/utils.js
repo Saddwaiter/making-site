@@ -29,14 +29,14 @@ export const isAuth = (req, res, next) => {
     const token = authorization.slice(7, authorization.length); // Bearer XXXXXX
     jwt.verify(token, process.env.JWT_SECRET, (err, decode) => {
       if (err) {
-        res.status(401).send({ message: 'Invalid Token' });
+        res.status(401).send({ message: 'Недійсний токен' });
       } else {
         req.user = decode;
         next();
       }
     });
   } else {
-    res.status(401).send({ message: 'No Token' });
+    res.status(401).send({ message: 'Без токена' });
   }
 };
 
@@ -44,7 +44,7 @@ export const isAdmin = (req, res, next) => {
   if (req.user && req.user.isAdmin) {
     next();
   } else {
-    res.status(401).send({ message: 'Invalid Admin Token' });
+    res.status(401).send({ message: 'Недійсний маркер адміністратора' });
   }
 };
 
@@ -55,17 +55,17 @@ export const mailgun = () =>
   });
 
 export const payOrderEmailTemplate = (order) => {
-  return `<h1>Thanks for shopping with us</h1>
+  return `<h1>Дякуємо за покупки з нами</h1>
   <p>
-  Hi ${order.user.name},</p>
-  <p>We have finished processing your order.</p>
+  Привіт ${order.user.name},</p>
+  <p>Ми закінчили обробку вашого замовлення.</p>
   <h2>[Order ${order._id}] (${order.createdAt.toString().substring(0, 10)})</h2>
   <table>
   <thead>
   <tr>
-  <td><strong>Product</strong></td>
-  <td><strong>Quantity</strong></td>
-  <td><strong align="right">Price</strong></td>
+  <td><strong>Продукт</strong></td>
+  <td><strong>Кількість</strong></td>
+  <td><strong align="right">Ціна</strong></td>
   </thead>
   <tbody>
   ${order.orderItems
@@ -82,24 +82,24 @@ export const payOrderEmailTemplate = (order) => {
   </tbody>
   <tfoot>
   <tr>
-  <td colspan="2">Items Price:</td>
+  <td colspan="2">Вартість предметів:</td>
   <td align="right"> $${order.itemsPrice.toFixed(2)}</td>
   </tr>
   <tr>
-  <td colspan="2">Shipping Price:</td>
+  <td colspan="2">Ціна доставки:</td>
   <td align="right"> $${order.shippingPrice.toFixed(2)}</td>
   </tr>
   <tr>
-  <td colspan="2"><strong>Total Price:</strong></td>
+  <td colspan="2"><strong>Загальна ціна:</strong></td>
   <td align="right"><strong> $${order.totalPrice.toFixed(2)}</strong></td>
   </tr>
   <tr>
-  <td colspan="2">Payment Method:</td>
+  <td colspan="2">Спосіб оплати:</td>
   <td align="right">${order.paymentMethod}</td>
   </tr>
   </table>
 
-  <h2>Shipping address</h2>
+  <h2>Адреса доставки:</h2>
   <p>
   ${order.shippingAddress.fullName},<br/>
   ${order.shippingAddress.address},<br/>
@@ -109,7 +109,7 @@ export const payOrderEmailTemplate = (order) => {
   </p>
   <hr/>
   <p>
-  Thanks for shopping with us.
+  Дякуємо, що зробили покупки у нас.
   </p>
   `;
 };

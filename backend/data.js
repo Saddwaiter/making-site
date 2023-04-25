@@ -62,7 +62,7 @@ const data = {
       category: 'Ноутбук',
       image: '/images/p4.jpg',
       price: 1000,
-      countInStock: 5,
+      countInStock: 0,
       brand: 'Acer',
       rating: 4.5,
       numReviews: 10,
